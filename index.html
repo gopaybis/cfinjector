@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VLESS Worker Generator</title>
+</head>
+<body>
+  <h2>VLESS Worker Generator</h2>
+  <form id="vlessForm">
+    <input type="email" id="email" placeholder="Cloudflare Email" required><br>
+    <input type="text" id="apiKey" placeholder="Global API Key" required><br>
+    <input type="text" id="workerName" placeholder="Worker Name" required><br>
+    <textarea id="proxyIp" placeholder="ip:port,ip:port" required></textarea><br>
+    
+    <input type="text" id="uuid" placeholder="UUID (optional)"><br>
+    <input type="text" id="nodeName" placeholder="Node Name (optional)"><br>
+    <input type="text" id="customDomain" placeholder="Custom Domain (optional)"><br>
+
+    <label><input type="checkbox" id="socks5Relay"> Socks5 Relay</label><br>
+    <input type="text" id="socks5Proxy" placeholder="Socks5 IP:Port"><br>
+
+    <button type="submit">Generate</button>
+  </form>
+
+  <pre id="output"></pre>
+
+  <script>
+    document.getElementById('vlessForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const body = {
+        email: document.getElementById('email').value,
+        globalAPIKey: document.getElementById('apiKey').value,
+        workerName: document.getElementById('workerName').value,
+        proxyIp: document.getElementById('proxyIp').value,
+        uuid: document.getElementById('uuid').value || undefined,
+        nodeName: document.getElementById('nodeName').value || undefined,
+        customDomain: document.getElementById('customDomain').value || undefined,
+        socks5Relay: document.getElementById('socks5Relay').checked,
+        socks5Proxy: document.getElementById('socks5Proxy').value || undefined,
+      };
+
+      const response = await fetch("https://cfworkerback-pages5.pages.dev/jit-plugin/createWorker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const result = await response.json();
+      document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+    });
+  </script>
+</body>
+</html>
